@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: p5-cashflow-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pbo2026_cashflow
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - cashflow-postgres-data:/var/lib/postgresql/data
+volumes:
+  cashflow-postgres-data:

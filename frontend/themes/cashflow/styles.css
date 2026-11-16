@@ -1,0 +1,17 @@
+:root {
+  --lumo-primary-color: #2563eb;
+  --lumo-primary-color-50pct: rgba(37, 99, 235, .5);
+  --lumo-primary-color-10pct: rgba(37, 99, 235, .1);
+  --lumo-border-radius-l: 14px;
+}
+vaadin-app-layout::part(navbar) { padding: 12px 20px; border-bottom: 1px solid var(--lumo-contrast-10pct); }
+vaadin-grid { border-radius: 12px; overflow: hidden; }
+vaadin-button { font-weight: 600; }
+vaadin-button:not([disabled]), vaadin-upload-button, a[router-link], vaadin-grid-sorter, vaadin-menu-bar-item, vaadin-context-menu-item, vaadin-tab, vaadin-drawer-toggle { cursor: pointer; }
+vaadin-button[disabled] { cursor: not-allowed; }
+vaadin-dialog-overlay::part(header) { background: #2563EB; color: white; font-weight: 700; }
+vaadin-dialog-overlay::part(footer) { background: #F3F4F6; border-top: 1px solid #d1d5db; justify-content: flex-end; }
+.v-loading-indicator { position: fixed; top: 0; left: 0; right: 0; height: 4px; z-index: 2147483647; pointer-events: none; }
+.v-loading-indicator:before { content: ""; display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #2563EB, #60a5fa, #2563EB); box-shadow: 0 0 12px rgba(37,99,235,.65); transform-origin: left; animation: cashflow-loading 1.2s ease-in-out infinite; }
+@keyframes cashflow-loading { 0% { transform: scaleX(.08); } 50% { transform: scaleX(.72); } 100% { transform: scaleX(1); } }
+vaadin-progress-bar::part(bar) { background: #2563EB; }

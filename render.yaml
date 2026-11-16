@@ -1,0 +1,39 @@
+databases:
+  - name: cashflow-db
+    databaseName: pbo2026_cashflow
+    user: cashflow_user
+    plan: free
+services:
+  - type: web
+    name: ifs25019-cashflow
+    runtime: docker
+    plan: free
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: cashflow-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: cashflow-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: cashflow-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: cashflow-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: cashflow-db
+          property: password
+      - key: ROOT_USERNAME
+        value: admin
+      - key: ROOT_PASSWORD
+        generateValue: true
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+      - key: APP_PORT
+        value: 8080

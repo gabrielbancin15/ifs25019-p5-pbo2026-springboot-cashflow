@@ -1,0 +1,13 @@
+package org.delcom.ifs25019springbootcashflow.usecase;
+import org.springframework.stereotype.Service; import org.delcom.ifs25019springbootcashflow.domain.*; import org.delcom.ifs25019springbootcashflow.domain.repository.*; import java.time.LocalDateTime; import java.util.*;
+@Service public class FinanceUseCase {private final ITransactionRepository repo; public FinanceUseCase(ITransactionRepository r){repo=r;} public Transaction add(long uid,String desc,long amount,TransactionType type,String proof)throws DomainException{if(desc==null||desc.isBlank()||amount<=0||type==null)throw new ValidationException("Keterangan wajib diisi dan jumlah harus lebih dari nol.");return repo.save(new Transaction(null,uid,desc.trim(),amount,type,proof,LocalDateTime.now()));} public List<Transaction> list(long uid,String query,SortOption sort){SortOption option=sort==null?SortOption.NEWEST:sort;return repo.findByUserId(uid).stream().filter(t->query==null||query.isBlank()||t.description().toLowerCase().contains(query.toLowerCase())).sorted(option.comparator()).toList();} public long balance(long uid){return repo.findByUserId(uid).stream().mapToLong(t->t.type()==TransactionType.INCOME?t.amount():-t.amount()).sum();} public long total(long uid,TransactionType type){return repo.findByUserId(uid).stream().filter(t->t.type()==type).mapToLong(Transaction::amount).sum();} public void delete(long uid,long id)throws DomainException{Transaction t=repo.findById(id).orElseThrow(()->new EntityNotFoundException("Transaksi tidak ditemukan."));if(t.userId()!=uid)throw new ValidationException("Tidak memiliki akses.");repo.deleteById(id);} public List<Transaction> all(){return repo.findAll();}
+ public List<Transaction> listForAdmin(long userId){return repo.findByUserId(userId).stream().sorted(SortOption.NEWEST.comparator()).toList();}
+ public Transaction update(long uid,long id,String desc,long amount,TransactionType type)throws DomainException{return update(uid,id,desc,amount,type,null);}
+ public Transaction update(long uid,long id,String desc,long amount,TransactionType type,String proofPath)throws DomainException{
+  Transaction old=repo.findById(id).orElseThrow(()->new EntityNotFoundException("Transaksi tidak ditemukan."));
+  if(old.userId()!=uid)throw new ValidationException("Tidak memiliki akses.");
+  if(desc==null||desc.isBlank()||amount<=0||type==null)throw new ValidationException("Keterangan dan jumlah harus valid.");
+  return repo.save(new Transaction(old.id(),uid,desc.trim(),amount,type,proofPath==null?old.proofPath():proofPath,old.createdAt()));
+ }
+ public List<Transaction> searchAllForAdmin(long userId){return listForAdmin(userId);}
+}
